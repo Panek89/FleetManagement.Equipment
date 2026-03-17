@@ -27,12 +27,9 @@ public class BaseEquipment<T> : BaseEntity<T> where T : BaseEquipment<T>
     Description = description;
   }
 
-  public void DecreaseValueByPercentage(decimal percentage)
+  public void DecreaseValueByPercentage(Percentage percentage)
   {
-    if (percentage is < 0 or > 100)
-      throw new ArgumentOutOfRangeException(nameof(percentage));
-
-    var amount = CurrentValue.Amount * percentage / 100m;
+    var amount = CurrentValue.Amount * percentage.Percent / 100m;
     DecreaseValueByAmount(amount);
   }
 
