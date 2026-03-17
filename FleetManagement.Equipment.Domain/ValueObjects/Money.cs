@@ -1,19 +1,18 @@
-namespace FleetManagement.Equipment.Domain.ValueObjects
+namespace FleetManagement.Equipment.Domain.ValueObjects;
+
+public sealed record Money
 {
-  public sealed record Money
+  public decimal Amount { get; set; }
+  public string Currency { get; set; }
+
+  public Money(decimal amount, string currency)
   {
-    public decimal Amount { get; set; }
-    public required string Concurrency { get; set; }
+    if (amount < 0)
+      throw new ArgumentException("Amount can't be negative", nameof(amount));
+    if (string.IsNullOrWhiteSpace(currency))
+      throw new ArgumentException("Concurrency must be set", nameof(currency));
 
-    public Money(decimal amount, string concurrency)
-    {
-      if (amount < 0)
-        throw new ArgumentException("Amount can't be negative", nameof(amount));
-      if (string.IsNullOrWhiteSpace(concurrency))
-        throw new ArgumentException("Concurrency must be set", nameof(concurrency));
-
-      Amount = amount;
-      Concurrency = concurrency;
-    }
+    Amount = amount;
+    Currency = currency;
   }
 }
