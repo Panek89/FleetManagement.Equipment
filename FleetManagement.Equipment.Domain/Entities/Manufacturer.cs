@@ -2,10 +2,12 @@ namespace FleetManagement.Equipment.Domain.Entities;
 
 public class Manufacturer : BaseEntity<Manufacturer>
 {
-  public string Name { get; set; }
-  public string Country { get; set; }
+  public string Name { get; set; } = null!;
+  public string Country { get; set; } = null!;
 
   public ICollection<Car> Cars { get; set; } = [];
+
+  private Manufacturer() { }
 
   public Manufacturer(string name, string country)
   {

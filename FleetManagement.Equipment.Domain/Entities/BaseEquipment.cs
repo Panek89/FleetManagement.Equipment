@@ -4,10 +4,12 @@ namespace FleetManagement.Equipment.Domain.Entities;
 
 public class BaseEquipment<T> : BaseEntity<T> where T : BaseEquipment<T>
 {
-  public Money InitialValue { get; set; }
-  public Money CurrentValue { get; set; }
-  public string Title { get; set; }
-  public string Description { get; set; }
+  public Money InitialValue { get; set; } = null!;
+  public Money CurrentValue { get; set; } = null!;
+  public string Title { get; set; } = null!;
+  public string Description { get; set; } = null!;
+
+  protected BaseEquipment() { }
 
   public BaseEquipment(Money initialValue, Money currentValue, string title, string description)
     : base()
