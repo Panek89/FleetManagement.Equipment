@@ -2,7 +2,7 @@ using FleetManagement.Equipment.Shared.Consts;
 
 namespace FleetManagement.Equipment.Domain.Entities;
 
-public class BaseEntity<T> where T : class
+public abstract class BaseEntity
 {
   public Guid Id { get; set; } = Guid.NewGuid();
   public bool IsActive { get; set; } = false;
