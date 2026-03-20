@@ -1,6 +1,6 @@
 namespace FleetManagement.Equipment.Domain.Entities;
 
-public class Manufacturer : BaseEntity<Manufacturer>
+public class Manufacturer : BaseEntity
 {
   public string Name { get; set; } = null!;
   public string Country { get; set; } = null!;

@@ -2,7 +2,7 @@ using FleetManagement.Equipment.Domain.ValueObjects;
 
 namespace FleetManagement.Equipment.Domain.Entities;
 
-public class BaseEquipment<T> : BaseEntity<T> where T : BaseEquipment<T>
+public class BaseEquipment<T> : BaseEntity where T : BaseEquipment<T>
 {
   public Money InitialValue { get; set; } = null!;
   public Money CurrentValue { get; set; } = null!;
