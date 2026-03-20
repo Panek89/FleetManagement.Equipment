@@ -19,4 +19,8 @@
     <ProjectReference Include="..\FleetManagement.Equipment.Domain\FleetManagement.Equipment.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Configurations\" />
+  </ItemGroup>
+
 </Project>
