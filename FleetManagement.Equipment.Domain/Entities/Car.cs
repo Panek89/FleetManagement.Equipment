@@ -5,6 +5,7 @@ namespace FleetManagement.Equipment.Domain.Entities;
 
 public sealed class Car : BaseEquipment<Car>
 {
+  public Guid ManufacturerId { get; set; }
   public Manufacturer Manufacturer { get; set; } = null!;
   public decimal Mileage { get; set; }
   public int ProductionYear { get; set; }
