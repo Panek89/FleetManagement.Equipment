@@ -107,18 +107,24 @@ By specifying both the migration project (`-p`) and the startup project (`-s`), 
 
 This approach ensures migrations are generated with the correct context and configuration, avoiding issues with missing dependencies or misconfigured services.
 
-### Prerequisites
+### Apply Migration
 
-- [.NET SDK](https://dotnet.microsoft.com/download) must be installed.
-- The [EF Core Tools](https://learn.microsoft.com/en-us/ef/core/cli/dotnet) must be available. You can install them globally with:
-	```
-	dotnet tool install --global dotnet-ef
-	```
-- Ensure all project dependencies are restored:
-	```
-	dotnet restore
-	```
+To apply pending migrations to the database, run the following command from the solution root:
 
-### Local Development Configuration
+```
+dotnet ef database update -p .\FleetManagement.Equipment.Infrastructure\FleetManagement.Equipment.Infrastructure.csproj -s .\FleetManagement.Equipment.API\FleetManagement.Equipment.API.csproj
+```
 
-For local development, make sure to configure the connection string in `FleetManagement.Equipment.API/appsettings.Development.json` under the `ConnectionStrings:SqlDatabase` section. This file should contain the correct settings for your local SQL Server instance.
+#### Why This Command?
+
+This command applies any pending Entity Framework Core migrations to the target database. It is useful when you want to create or update the database schema to match the current model defined in the Infrastructure project.
+
+#### Command Breakdown
+
+- `dotnet ef database update` — Applies any pending EF Core migrations to the target database, creating or updating tables, keys, indexes, and other schema elements.
+- `-p .\FleetManagement.Equipment.Infrastructure\FleetManagement.Equipment.Infrastructure.csproj` — Specifies the project that contains the migrations and the `DbContext` (the Infrastructure project). Migrations will be read from this project.
+- `-s .\FleetManagement.Equipment.API\FleetManagement.Equipment.API.csproj` — Specifies the startup project (the API project). The startup project is used to load application configuration, dependency injection, and any services required when constructing the `DbContext` (for example, the connection string).
+
+This combination ensures EF Core applies migrations from the Infrastructure project while using the API project's runtime configuration and services to connect to the correct database.
+
+After running the command, verify the database schema is updated and the migration history table (usually `__EFMigrationsHistory`) contains the applied migration entries.
