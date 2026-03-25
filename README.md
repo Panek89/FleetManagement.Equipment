@@ -5,6 +5,7 @@ Microservice for Fleet Management system
 ## Table of Contents
 
 - [Domain Entities Overview](#domain-entities-overview)
+- [Running Locally](#running-locally)
 - [Database Migrations](#database-migrations)
 ## Domain Entities Overview
 
@@ -64,6 +65,44 @@ classDiagram
 **Legend:**
 - <span style="background-color:#fff; color:#000; padding:2px 6px; border-radius:3px; border:1px solid #333;">White</span> = Entity persisted in the database
 - Other classes are domain abstractions or value objects
+
+## Running Locally
+
+To run and test the application locally you need a running SQL Server instance. The easiest way is to use a container.
+
+### Start SQL Server Container
+
+**Docker:**
+```bash
+docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=MyPassword123!!" -e "MSSQL_PID=StandardDeveloper" -p 1433:1433 --name sql2025 --hostname sql2025 -d mcr.microsoft.com/mssql/server:2025-latest
+```
+
+**Podman:**
+```bash
+podman run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=MyPassword123!!" -e "MSSQL_PID=StandardDeveloper" -p 1433:1433 --name sql2025 --hostname sql2025 -d mcr.microsoft.com/mssql/server:2025-latest
+```
+
+### Configure Connection String
+
+Once the container is running, set the connection string in `FleetManagement.Equipment.API/appsettings.Development.json`:
+
+```json
+{
+  "ConnectionStrings": {
+    "SqlDatabase": "Server=localhost,1433;Database=FleetManagement.Equipment;User Id=sa;Password=MyPassword123!!;Encrypt=True;TrustServerCertificate=True;"
+  }
+}
+```
+
+### Run the Application
+
+```bash
+dotnet run --project FleetManagement.Equipment.API/FleetManagement.Equipment.API.csproj
+```
+
+The application will automatically apply any pending migrations on startup.
+
+---
 
 ## Database Migrations
 
