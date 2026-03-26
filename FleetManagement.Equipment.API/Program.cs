@@ -1,4 +1,5 @@
 using FleetManagement.Equipment.Infrastructure;
+using FleetManagement.Equipment.Application;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
@@ -11,6 +12,7 @@ if (string.IsNullOrWhiteSpace(sqlConnectionString))
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddDatabase(sqlConnectionString);
+builder.Services.AddApplication();
 
 var app = builder.Build();
 
