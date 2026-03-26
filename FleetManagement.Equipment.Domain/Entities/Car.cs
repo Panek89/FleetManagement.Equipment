@@ -1,4 +1,3 @@
-using System;
 using FleetManagement.Equipment.Domain.ValueObjects;
 
 namespace FleetManagement.Equipment.Domain.Entities;
@@ -12,19 +11,26 @@ public sealed class Car : BaseEquipment<Car>
 
   private Car() { }
 
-  public Car(
+  private Car(
     Money initialValue,
     Money currentValue,
     string title,
     string description,
-    Manufacturer manufacturer,
+    Guid manufacturerId,
     decimal mileage,
     int productionYear
   )
     : base(initialValue, currentValue, title, description)
   {
-    Manufacturer = manufacturer;
+    ManufacturerId = manufacturerId;
     Mileage = mileage;
     ProductionYear = productionYear;
+  }
+
+  public Car Make(Guid manufacturerId, Money initialValue, string title, string description)
+  {
+    var currentYearProduction = DateTime.Now.Year;
+
+    return new Car(initialValue, initialValue, title, description, manufacturerId, 0, currentYearProduction);
   }
 }
