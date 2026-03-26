@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MediatR" Version="12.5.0" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.5">
@@ -19,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FleetManagement.Equipment.Infrastructure\FleetManagement.Equipment.Infrastructure.csproj" />
+    <ProjectReference Include="..\FleetManagement.Equipment.Application\FleetManagement.Equipment.Application.csproj" />
   </ItemGroup>
 
 </Project>
