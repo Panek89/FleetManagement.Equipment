@@ -1,3 +1,5 @@
+using FleetManagement.Equipment.Domain.Repositories;
+using FleetManagement.Equipment.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -8,6 +10,7 @@ public static class InfrastructureServiceCollectionExtensions
   public static IServiceCollection AddInfrastructure(this IServiceCollection services)
   {
     // repositories
+    services.AddScoped<ICarsRepository, CarsRepository>();
 
     return services;
   }
