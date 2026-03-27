@@ -12,6 +12,7 @@ if (string.IsNullOrWhiteSpace(sqlConnectionString))
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddDatabase(sqlConnectionString);
+builder.Services.AddInfrastructure();
 builder.Services.AddApplication();
 
 var app = builder.Build();
