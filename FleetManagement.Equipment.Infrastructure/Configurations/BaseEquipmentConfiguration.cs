@@ -19,7 +19,7 @@ public class BaseEquipmentConfiguration<T> : BaseEntityConfiguration<T>
       initialValueBuilder.Property(p => p.Amount)
         .HasColumnName("INITIAL_VALUE_AMOUNT")
         .HasColumnType("decimal")
-        .HasPrecision(2);
+        .HasPrecision(18, 2);
       initialValueBuilder.Property(p => p.Currency).HasColumnName("INITIAL_VALUE_CURRENCY");
     });
 
@@ -28,7 +28,7 @@ public class BaseEquipmentConfiguration<T> : BaseEntityConfiguration<T>
       currentValueBuilder.Property(p => p.Amount)
         .HasColumnName("CURRENT_VALUE_AMOUNT")
         .HasColumnType("decimal")
-        .HasPrecision(2);
+        .HasPrecision(18, 2);
       currentValueBuilder.Property(p => p.Currency).HasColumnName("CURRENT_VALUE_CURRENCY");
     });
   }
