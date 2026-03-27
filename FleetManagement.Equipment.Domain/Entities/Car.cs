@@ -27,10 +27,17 @@ public sealed class Car : BaseEquipment<Car>
     ProductionYear = productionYear;
   }
 
-  public Car Make(Guid manufacturerId, Money initialValue, string title, string description)
+  public static Car RegisterNew(Guid manufacturerId, Money initialValue, string title, string description)
   {
     var currentYearProduction = DateTime.Now.Year;
+    var zeroMileage = 0;
+    var currentValue = initialValue with { };
 
-    return new Car(initialValue, initialValue, title, description, manufacturerId, 0, currentYearProduction);
+    return new Car(initialValue, currentValue, title, description, manufacturerId, zeroMileage, currentYearProduction);
+  }
+
+  public static Car RegisterUsed(Guid manufacturerId, Money initialValue, Money currentValue, string title, string description, decimal mileage, int productionYear)
+  {
+    return new Car(initialValue, currentValue, title, description, manufacturerId, mileage, productionYear);
   }
 }

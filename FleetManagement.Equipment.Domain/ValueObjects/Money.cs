@@ -2,8 +2,8 @@ namespace FleetManagement.Equipment.Domain.ValueObjects;
 
 public sealed record Money
 {
-  public decimal Amount { get; set; }
-  public string Currency { get; set; }
+  public decimal Amount { get; init; }
+  public string Currency { get; init; }
 
   public Money(decimal amount, string currency)
   {
