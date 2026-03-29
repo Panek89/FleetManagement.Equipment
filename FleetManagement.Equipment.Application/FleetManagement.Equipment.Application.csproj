@@ -7,7 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.1.0" />
+    <PackageReference Include="MediatR" Version="12.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Cars\" />
+    <Folder Include="Cars\Commands\" />
+    <Folder Include="Cars\Queries\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FleetManagement.Equipment.Domain\FleetManagement.Equipment.Domain.csproj" />
   </ItemGroup>
 
 </Project>
