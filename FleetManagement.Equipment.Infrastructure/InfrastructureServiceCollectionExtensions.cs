@@ -11,6 +11,7 @@ public static class InfrastructureServiceCollectionExtensions
   {
     // repositories
     services.AddScoped<ICarsRepository, CarsRepository>();
+    services.AddScoped<IManufacturersRepository, ManufacturersRepository>();
 
     return services;
   }
