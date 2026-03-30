@@ -23,6 +23,7 @@
   <ItemGroup>
     <Folder Include="Configurations\" />
     <Folder Include="Repositories\" />
+    <Folder Include="SeedData\" />
   </ItemGroup>
 
 </Project>
