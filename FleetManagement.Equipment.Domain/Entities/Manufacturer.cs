@@ -2,8 +2,30 @@ namespace FleetManagement.Equipment.Domain.Entities;
 
 public class Manufacturer : BaseEntity
 {
-  public string Name { get; set; } = null!;
-  public string Country { get; set; } = null!;
+  private string _name = null!;
+  private string _country = null!;
+
+  public string Name
+  {
+    get => _name;
+    set
+    {
+      if (string.IsNullOrWhiteSpace(value))
+        throw new ArgumentException("Name must be set", nameof(Name));
+      _name = value;
+    }
+  }
+
+  public string Country
+  {
+    get => _country;
+    set
+    {
+      if (string.IsNullOrWhiteSpace(value))
+        throw new ArgumentException("Country must be set", nameof(Country));
+      _country = value;
+    }
+  }
 
   public ICollection<Car> Cars { get; set; } = [];
 
@@ -11,13 +33,14 @@ public class Manufacturer : BaseEntity
 
   public Manufacturer(string name, string country)
   {
-    if (string.IsNullOrWhiteSpace(name))
-      throw new ArgumentException("Name must be set", nameof(name));
-
-    if (string.IsNullOrWhiteSpace(country))
-      throw new ArgumentException("Country must be set", nameof(country));
-
     Name = name;
     Country = country;
+  }
+
+  public Manufacturer(string name, string country, bool isActive, string createdBy)
+      : this(name, country)
+  {
+    IsActive = isActive;
+    CreatedBy = createdBy;
   }
 }
