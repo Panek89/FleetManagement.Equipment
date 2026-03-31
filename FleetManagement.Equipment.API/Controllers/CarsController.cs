@@ -1,4 +1,4 @@
-using FleetManagement.Equipment.Application.Cars.Queries;
+using FleetManagement.Equipment.Application.Cars.Commands;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

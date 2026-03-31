@@ -3,7 +3,7 @@ using FleetManagement.Equipment.Domain.Repositories;
 using FleetManagement.Equipment.Domain.ValueObjects;
 using MediatR;
 
-namespace FleetManagement.Equipment.Application.Cars.Queries;
+namespace FleetManagement.Equipment.Application.Cars.Commands;
 
 public record RegisterNewCarCommand(Guid ManufacturerId, Money InitialValue, string Title, string Description) : IRequest;
 
