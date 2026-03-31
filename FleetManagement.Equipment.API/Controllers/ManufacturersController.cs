@@ -1,5 +1,5 @@
 using FleetManagement.Equipment.Application.Manufacturers.Queries;
-using FleetManagement.Equipment.Domain.Entities;
+using FleetManagement.Equipment.Domain.DTOs;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,7 +17,7 @@ namespace FleetManagement.Equipment.API.Controllers
     }
 
     [HttpGet("get-by-id/{id:guid}")]
-    public async Task<ActionResult<Manufacturer?>> GetById([FromRoute] Guid id, CancellationToken cancellationToken)
+    public async Task<ActionResult<ManufacturerDto?>> GetById([FromRoute] Guid id, CancellationToken cancellationToken)
     {
       return await _sender.Send(new GetManufacturerByIdQuery(id), cancellationToken);
     }
