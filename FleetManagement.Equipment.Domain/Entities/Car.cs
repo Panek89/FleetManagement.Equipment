@@ -18,13 +18,15 @@ public sealed class Car : BaseEquipment<Car>
     string description,
     Guid manufacturerId,
     decimal mileage,
-    int productionYear
+    int productionYear,
+    bool isActive
   )
     : base(initialValue, currentValue, title, description)
   {
     ManufacturerId = manufacturerId;
     Mileage = mileage;
     ProductionYear = productionYear;
+    IsActive = isActive;
   }
 
   public static Car RegisterNew(Guid manufacturerId, Money initialValue, string title, string description)
@@ -33,11 +35,11 @@ public sealed class Car : BaseEquipment<Car>
     var zeroMileage = 0;
     var currentValue = initialValue with { };
 
-    return new Car(initialValue, currentValue, title, description, manufacturerId, zeroMileage, currentYearProduction);
+    return new Car(initialValue, currentValue, title, description, manufacturerId, zeroMileage, currentYearProduction, isActive: true);
   }
 
   public static Car RegisterUsed(Guid manufacturerId, Money initialValue, Money currentValue, string title, string description, decimal mileage, int productionYear)
   {
-    return new Car(initialValue, currentValue, title, description, manufacturerId, mileage, productionYear);
+    return new Car(initialValue, currentValue, title, description, manufacturerId, mileage, productionYear, isActive: true);
   }
 }
