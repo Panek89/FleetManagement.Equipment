@@ -24,7 +24,7 @@ namespace FleetManagement.Equipment.API.Controllers
     }
 
     [HttpPost("register-used")]
-    public async Task<IActionResult> RegisterUsed([FromBody] RegisterNewCarCommand command)
+    public async Task<IActionResult> RegisterUsed([FromBody] RegisterUsedCarCommand command)
     {
       await _sender.Send(command);
 
