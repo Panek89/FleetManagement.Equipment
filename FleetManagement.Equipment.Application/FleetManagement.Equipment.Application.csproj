@@ -12,8 +12,6 @@
 
   <ItemGroup>
     <Folder Include="Cars\Queries\" />
-    <Folder Include="Manufacturers\" />
-    <Folder Include="Manufacturers\Queries\" />
   </ItemGroup>
 
   <ItemGroup>
