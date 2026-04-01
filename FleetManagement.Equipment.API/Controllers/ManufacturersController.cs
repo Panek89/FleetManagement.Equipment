@@ -16,6 +16,12 @@ namespace FleetManagement.Equipment.API.Controllers
       _sender = sender ?? throw new ArgumentNullException(nameof(sender));
     }
 
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<ManufacturerDto>>> GetAll(CancellationToken cancellationToken)
+    {
+      return Ok(await _sender.Send(new AllManufacturersQuery(), cancellationToken));
+    }
+
     [HttpGet("get-by-id/{id:guid}")]
     public async Task<ActionResult<ManufacturerDto?>> GetById([FromRoute] Guid id, CancellationToken cancellationToken)
     {
