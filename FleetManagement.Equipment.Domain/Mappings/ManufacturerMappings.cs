@@ -15,4 +15,9 @@ public static class ManufacturerMappings
       IsActive = manufacturer.IsActive
     };
   }
+
+  public static IEnumerable<ManufacturerDto> MapToDtos(this IEnumerable<Manufacturer> manufacturers)
+  {
+    return manufacturers.Select(MapToDto);
+  }
 }
