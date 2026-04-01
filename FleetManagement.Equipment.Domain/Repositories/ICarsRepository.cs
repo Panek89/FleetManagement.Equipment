@@ -4,5 +4,5 @@ namespace FleetManagement.Equipment.Domain.Repositories;
 
 public interface ICarsRepository : IBaseRepository<Car>
 {
-
+  public Task<IEnumerable<Car>> GetByManufacturerAsync(string manufacturerName, CancellationToken cancellationToken);
 }
