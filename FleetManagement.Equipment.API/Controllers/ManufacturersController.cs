@@ -19,7 +19,7 @@ namespace FleetManagement.Equipment.API.Controllers
     [HttpGet("get-by-id/{id:guid}")]
     public async Task<ActionResult<ManufacturerDto?>> GetById([FromRoute] Guid id, CancellationToken cancellationToken)
     {
-      return await _sender.Send(new GetManufacturerByIdQuery(id), cancellationToken);
+      return Ok(await _sender.Send(new ManufacturerByIdQuery(id), cancellationToken));
     }
   }
 }
