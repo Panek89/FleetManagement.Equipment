@@ -14,7 +14,7 @@ resource "azurerm_mssql_database" "mssql_db_fleetmanagement_equipment" {
   name      = "mssql-dbequipment-${var.resource-suffix}"
   server_id = azurerm_mssql_server.mssql_server.id
   collation = "SQL_Latin1_General_CP1_CI_AS"
-  sku_name  = "free"
+  sku_name  = "Free"
 }
 
 resource "azurerm_mssql_firewall_rule" "allow_my_ip" {
