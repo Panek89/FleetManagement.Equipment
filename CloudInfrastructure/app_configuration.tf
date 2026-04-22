@@ -27,7 +27,7 @@ locals {
 
 resource "azurerm_app_configuration_key" "mssql_connection_string" {
   configuration_store_id = azurerm_app_configuration.app_configuration.id
-  key                    = "Mssql:ConnectionString"
+  key                    = "Mssql:DbEquipmentConnectionString"
   type                   = "kv"
   label                  = "production"
   value                  = local.sql_conn_string
