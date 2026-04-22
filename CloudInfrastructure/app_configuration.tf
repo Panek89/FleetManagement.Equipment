@@ -22,7 +22,7 @@ resource "azurerm_app_configuration_key" "mssql_password_key" {
 }
 
 locals {
-  sql_conn_string = "Server=tcp:${azurerm_mssql_server.mssql_server.fully_qualified_domain_name},1433;Initial Catalog=${azurerm_mssql_database.mssql_db_fleetmanagement.name};Persist Security Info=False;User ID=${azurerm_mssql_server.mssql_server.administrator_login};Password=${random_password.sql_admin_password.result};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
+  sql_conn_string = "Server=tcp:${azurerm_mssql_server.mssql_server.fully_qualified_domain_name},1433;Initial Catalog=${azurerm_mssql_database.mssql_db_fleetmanagement_equipment.name};Persist Security Info=False;User ID=${azurerm_mssql_server.mssql_server.administrator_login};Password=${random_password.sql_admin_password.result};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
 }
 
 resource "azurerm_app_configuration_key" "mssql_connection_string" {
@@ -32,5 +32,5 @@ resource "azurerm_app_configuration_key" "mssql_connection_string" {
   label                  = "production"
   value                  = local.sql_conn_string
 
-  depends_on = [azurerm_mssql_server.mssql_server, azurerm_mssql_database.mssql_db_fleetmanagement, azurerm_role_assignment.appconf_data_owner]
+  depends_on = [azurerm_mssql_server.mssql_server, azurerm_mssql_database.mssql_db_fleetmanagement_equipment, azurerm_role_assignment.appconf_data_owner]
 }
