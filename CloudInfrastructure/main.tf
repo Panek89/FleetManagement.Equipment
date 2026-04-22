@@ -11,14 +11,19 @@ provider "azurerm" {
   features {}
 }
 
+data "azurerm_client_config" "current" {}
+
+data "http" "my_public_ip" {
+  url = "https://ifconfig.me/ip"
+}
+
+resource "random_password" "sql_admin_password" {
+  length           = 24
+  special          = true
+  override_special = "!#$%&*()-_=+[]{}<>:?"
+}
+
 resource "azurerm_resource_group" "resource_group" {
   name     = "rg-${var.resource-suffix}"
   location = var.location-region
-}
-
-resource "azurerm_app_configuration" "app_configuration" {
-  name                = "appconf-${var.resource-suffix}"
-  resource_group_name = azurerm_resource_group.resource_group.name
-  location            = var.location-region
-  sku                 = "free"
 }
