@@ -12,6 +12,6 @@ variable "location-region" {
 
 variable "is_local" {
   type        = bool
-  default     = true
-  description = "Ustaw na false, jeśli uruchamiasz kod w Pipeline"
+  default     = false
+  description = "Set to false if you are running your code in Pipeline"
 }
