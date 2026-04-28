@@ -1,0 +1,80 @@
+variables:
+  - group: Terraform_Backend
+  - group: FleetManagement_Infrastructure
+
+trigger:
+  - main
+
+pool:
+  vmImage: "ubuntu-latest"
+
+steps:
+  - task: Bash@3
+    displayName: "Debug: System Information & Variables"
+    inputs:
+      targetType: "inline"
+      script: |
+        echo "Check pre-installed Terraform version:"
+        terraform --version
+        echo "----------------------------------------------------"
+        echo "Backend Variables:"
+        echo "  asa_name: $(asa_name)"
+        echo "  asa_bs_name: $(asa_bs_name)"
+        echo "  resource_group_name: $(resource_group_name)"
+        echo "  azurerm_service_connection: $(azurerm_service_connection)"
+        echo "Fleet Management Shared Variables:"
+        echo "  fm_resource_group_name: $(fm_resource_group_name)"
+        echo "  fm_location: $(fm_location)"
+        echo "  fm_suffix: $(fm_suffix)"
+        echo "  fm_mssql_server_name (base): $(fm_mssql_server_name)"
+        echo "  fm_default-env-suffix: $(fm_default-env-suffix)"
+        echo "----------------------------------------------------"
+        echo "Derived resource names (matching Infrastructure):"
+        echo "  Full SQL Server Name: $(fm_mssql_server_name)-$(fm_suffix)-$(fm_default-env-suffix)"
+        echo "  Full App Config Name: appconf-$(fm_suffix)-$(fm_default-env-suffix)"
+
+  - task: TerraformInstaller@1
+    inputs:
+      terraformVersion: "latest"
+
+  - task: TerraformTaskV4@4
+    displayName: "Terraform Init"
+    inputs:
+      provider: "azurerm"
+      command: "init"
+      workingDirectory: "$(System.DefaultWorkingDirectory)/FleetManagement.Equipment/CloudInfrastructure"
+      backendServiceArm: "$(azurerm_service_connection)"
+      backendAzureRmResourceGroupName: "$(resource_group_name)"
+      backendAzureRmStorageAccountName: "$(asa_name)"
+      backendAzureRmContainerName: "$(asa_bs_name)"
+      backendAzureRmKey: "fleetmanagement-equipment.tfstate"
+
+  - task: TerraformTaskV4@4
+    displayName: "Terraform Plan"
+    inputs:
+      provider: "azurerm"
+      command: "plan"
+      workingDirectory: "$(System.DefaultWorkingDirectory)/FleetManagement.Equipment/CloudInfrastructure"
+      environmentServiceNameAzureRM: "$(azurerm_service_connection)"
+    env:
+      TF_VAR_shared_resource_group_name: "$(fm_resource_group_name)"
+      TF_VAR_location: "$(fm_location)"
+      TF_VAR_env_suffix: "$(fm_default-env-suffix)"
+      TF_VAR_fm_suffix: "$(fm_suffix)"
+      TF_VAR_mssql_server_name: "$(fm_mssql_server_name)-$(fm_suffix)-$(fm_default-env-suffix)"
+      TF_VAR_app_configuration_name: "appconf-$(fm_suffix)-$(fm_default-env-suffix)"
+
+  - task: TerraformTaskV4@4
+    displayName: "Terraform Apply"
+    inputs:
+      provider: "azurerm"
+      command: "apply"
+      workingDirectory: "$(System.DefaultWorkingDirectory)/FleetManagement.Equipment/CloudInfrastructure"
+      environmentServiceNameAzureRM: "$(azurerm_service_connection)"
+    env:
+      TF_VAR_shared_resource_group_name: "$(fm_resource_group_name)"
+      TF_VAR_location: "$(fm_location)"
+      TF_VAR_env_suffix: "$(fm_default-env-suffix)"
+      TF_VAR_fm_suffix: "$(fm_suffix)"
+      TF_VAR_mssql_server_name: "$(fm_mssql_server_name)-$(fm_suffix)-$(fm_default-env-suffix)"
+      TF_VAR_app_configuration_name: "appconf-$(fm_suffix)-$(fm_default-env-suffix)"
