@@ -5,6 +5,9 @@ terraform {
       version = "=4.69.0"
     }
   }
+
+  backend "azurerm" {
+  }
 }
 
 provider "azurerm" {
@@ -17,13 +20,16 @@ data "http" "my_public_ip" {
   url = "https://ifconfig.me/ip"
 }
 
-resource "random_password" "sql_admin_password" {
-  length           = 24
-  special          = true
-  override_special = "!#$%&*()-_=+[]{}<>:?"
+data "azurerm_resource_group" "shared_rg" {
+  name = var.shared_resource_group_name
 }
 
-resource "azurerm_resource_group" "resource_group" {
-  name     = "rg-${var.resource-suffix}"
-  location = var.location-region
+data "azurerm_mssql_server" "shared_mssql_server" {
+  name                = var.mssql_server_name
+  resource_group_name = data.azurerm_resource_group.shared_rg.name
+}
+
+data "azurerm_app_configuration" "shared_appconf" {
+  name                = var.app_configuration_name
+  resource_group_name = data.azurerm_resource_group.shared_rg.name
 }
