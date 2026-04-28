@@ -42,7 +42,7 @@ steps:
     inputs:
       provider: "azurerm"
       command: "init"
-      workingDirectory: "$(System.DefaultWorkingDirectory)/FleetManagement.Equipment/CloudInfrastructure"
+      workingDirectory: "$(System.DefaultWorkingDirectory)/CloudInfrastructure"
       backendServiceArm: "$(azurerm_service_connection)"
       backendAzureRmResourceGroupName: "$(resource_group_name)"
       backendAzureRmStorageAccountName: "$(asa_name)"
@@ -54,7 +54,7 @@ steps:
     inputs:
       provider: "azurerm"
       command: "plan"
-      workingDirectory: "$(System.DefaultWorkingDirectory)/FleetManagement.Equipment/CloudInfrastructure"
+      workingDirectory: "$(System.DefaultWorkingDirectory)/CloudInfrastructure"
       environmentServiceNameAzureRM: "$(azurerm_service_connection)"
     env:
       TF_VAR_shared_resource_group_name: "$(fm_resource_group_name)"
@@ -69,7 +69,7 @@ steps:
     inputs:
       provider: "azurerm"
       command: "apply"
-      workingDirectory: "$(System.DefaultWorkingDirectory)/FleetManagement.Equipment/CloudInfrastructure"
+      workingDirectory: "$(System.DefaultWorkingDirectory)/CloudInfrastructure"
       environmentServiceNameAzureRM: "$(azurerm_service_connection)"
     env:
       TF_VAR_shared_resource_group_name: "$(fm_resource_group_name)"
