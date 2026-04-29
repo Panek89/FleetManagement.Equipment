@@ -7,6 +7,7 @@ Microservice for the Fleet Management system.
 - [Domain Entities Overview](#domain-entities-overview)
 - [Local Development & Database Setup](docs/database.md)
 - [Cloud Infrastructure (IaC)](docs/infrastructure.md)
+- [Containerization](docs/containerization.md)
 
 ## Domain Entities Overview
 
