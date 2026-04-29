@@ -8,6 +8,7 @@ Microservice for the Fleet Management system.
 - [Local Development & Database Setup](docs/database.md)
 - [Cloud Infrastructure (IaC)](docs/infrastructure.md)
 - [Containerization](docs/containerization.md)
+- [Docker Hub Pipeline Integration (Future Ideas)](Docs/Ideas/dockerhub-pipeline.md)
 
 ## Domain Entities Overview
 
