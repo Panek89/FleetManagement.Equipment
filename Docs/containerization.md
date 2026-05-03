@@ -18,7 +18,48 @@ podman build -t fleet-management-equipment .
 
 ## Run the container
 
-Before running the application container, ensure you have a SQL Server instance running. 
+### 1. Docker Compose (Recommended for local dev)
+
+The easiest way to start both the SQL Server and the API is using Docker Compose.
+
+```bash
+docker-compose up -d
+```
+
+This will:
+1. Start a **SQL Server 2025** container.
+2. Wait for the database to be healthy.
+3. Build and start the **Equipment API**.
+4. Configure the API to connect to the SQL container automatically.
+
+To stop the services:
+```bash
+docker-compose down
+```
+
+### 2. Podman Compose (Linux Alternative)
+
+If you are using **Podman**, you can use `podman-compose` in a similar way:
+
+```bash
+podman-compose up -d
+```
+
+To stop the services:
+```bash
+podman-compose down
+```
+
+> **Note:** `podman-compose` might not be installed by default. You can install it via your package manager or pip:
+> - **Fedora/RHEL:** `sudo dnf install podman-compose`
+> - **Ubuntu/Debian:** `sudo apt install podman-compose`
+> - **Python/PIP:** `pip install podman-compose`
+
+> **Note:** Depending on your setup, you might need to ensure the Podman socket is active if you are using the standard `docker-compose` binary with Podman.
+
+### 3. Manual Run
+
+If you prefer to run containers manually, ensure you have a SQL Server instance running first. 
 
 > **Quick Start:** If you don't have SQL Server ready, follow the [Start SQL Server Container](database.md#start-sql-server-container) guide.
 
@@ -29,7 +70,7 @@ To run the application container, you need to provide the SQL connection string 
 > - **Docker (Linux):** Use the container's IP/Name or host IP.
 > - **Podman (Linux):** Use `host.containers.internal` or `10.0.2.2`.
 
-### PowerShell (Windows - Docker)
+#### PowerShell (Windows - Docker)
 ```powershell
 docker run -p 8080:8080 `
   -e ASPNETCORE_ENVIRONMENT=Development `
@@ -37,7 +78,7 @@ docker run -p 8080:8080 `
   fleet-management-equipment
 ```
 
-### Bash (Linux / macOS - Docker)
+#### Bash (Linux / macOS - Docker)
 ```bash
 docker run -p 8080:8080 \
   -e ASPNETCORE_ENVIRONMENT=Development \
@@ -45,7 +86,7 @@ docker run -p 8080:8080 \
   fleet-management-equipment
 ```
 
-### Bash (Linux - Podman Alternative)
+#### Bash (Linux - Podman Alternative)
 ```bash
 podman run -p 8080:8080 \
   -e ASPNETCORE_ENVIRONMENT=Development \
