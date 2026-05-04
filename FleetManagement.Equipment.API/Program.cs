@@ -5,7 +5,24 @@ using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+if (builder.Environment.IsDevelopment())
+{
+  var appConfigConnectionString = builder.Configuration["Azure:AppConfig"];
+  var appConfigLabel = builder.Configuration["Azure:AppConfigLabel"];
+
+  if (!string.IsNullOrEmpty(appConfigConnectionString))
+  {
+    builder.Configuration.AddAzureAppConfiguration(options =>
+    {
+      options.Connect(appConfigConnectionString)
+                 .Select("*")
+                 .Select("*", "dev");
+    });
+  }
+}
+
 var sqlConnectionString = builder.Configuration.GetConnectionString("SqlDatabase");
+
 if (string.IsNullOrWhiteSpace(sqlConnectionString))
   throw new ArgumentNullException(nameof(sqlConnectionString));
 
