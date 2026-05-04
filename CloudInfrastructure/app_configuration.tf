@@ -10,7 +10,7 @@ locals {
 
 resource "azurerm_app_configuration_key" "mssql_connection_string" {
   configuration_store_id = data.azurerm_app_configuration.shared_appconf.id
-  key                    = "Mssql:DbEquipmentConnectionString"
+  key                    = "ConnectionStrings:SqlDatabase"
   type                   = "kv"
   label                  = var.env_suffix
   value                  = local.sql_conn_string
