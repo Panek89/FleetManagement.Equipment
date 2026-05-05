@@ -52,8 +52,8 @@ stages:
       displayName: "Build Equipment Image"
       inputs:
         command: 'build'
-        Dockerfile: '$(Build.SourcesDirectory)/FleetManagement.Equipment/Dockerfile'
-        buildContext: '$(Build.SourcesDirectory)/FleetManagement.Equipment'
+        Dockerfile: '$(Build.SourcesDirectory)/Dockerfile'
+        buildContext: '$(Build.SourcesDirectory)'
         tags: |
           $(Build.BuildId)
           latest
