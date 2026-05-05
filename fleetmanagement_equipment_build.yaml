@@ -31,13 +31,13 @@ stages:
       displayName: "Restore Solution"
       inputs:
         command: 'restore'
-        projects: 'FleetManagement.Equipment/FleetManagement.Equipment.sln'
+        projects: 'FleetManagement.Equipment.sln'
 
     - task: DotNetCoreCLI@2
       displayName: "Build Solution"
       inputs:
         command: 'build'
-        projects: 'FleetManagement.Equipment/FleetManagement.Equipment.sln'
+        projects: 'FleetManagement.Equipment.sln'
         arguments: '--configuration Release'
 
 - stage: Build_Push_Docker
