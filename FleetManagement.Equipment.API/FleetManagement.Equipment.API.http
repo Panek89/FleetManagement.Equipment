@@ -1,6 +1,54 @@
 @FleetManagement.Equipment.API_HostAddress = http://localhost:5057
+@FleetManagement.Equipment.Manufacturer_ID = 8fcfd3c4-d9d6-4271-a443-48e6e0576b45
+@FleetManagement.Equipment.Manufacturer_ID_2 = 9a0bc5a9-5868-40b2-b935-6a29c45c9603
 
-GET {{FleetManagement.Equipment.API_HostAddress}}/weatherforecast/
+### CARS
+
+GET {{FleetManagement.Equipment.API_HostAddress}}/api/cars/by-manufacturer/daup
 Accept: application/json
+Content-Type: application/json
 
 ###
+
+POST {{FleetManagement.Equipment.API_HostAddress}}/api/cars/register-new
+Accept: application/json
+Content-Type: application/json
+
+{
+	"manufacturerId": "8fcfd3c4-d9d6-4271-a443-48e6e0576b45",
+	"initialValue": {
+		"amount": 25000.00,
+		"currency": "EUR"
+	},
+	"title": "Nowy samochód – Model X",
+	"description": "Przykładowy opis samochodu"
+}
+
+###
+
+POST {{FleetManagement.Equipment.API_HostAddress}}/api/cars/register-used
+Accept: application/json
+Content-Type: application/json
+
+{
+	"manufacturerId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+	"initialValue": {
+		"amount": 12000.00,
+		"currency": "EUR"
+	},
+	"title": "Używany samochód – Model Y",
+	"description": "Przykładowy opis samochodu używanego"
+}
+
+###
+### MANUFACTURERS
+
+GET {{FleetManagement.Equipment.API_HostAddress}}/api/manufacturers
+Accept: application/json
+Content-Type: application/json
+
+###
+
+GET {{FleetManagement.Equipment.API_HostAddress}}/api/manufacturers/get-by-id/{{FleetManagement.Equipment.Manufacturer_ID_2}}
+Accept: application/json
+Content-Type: application/json
