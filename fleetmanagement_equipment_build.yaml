@@ -13,20 +13,14 @@ variables:
   - group: FleetManagement_Infrastructure
 
 steps:
-- script: |
-    echo "Current directory: $(pwd)"
-    echo "Sources directory content:"
-    ls -R $(Build.SourcesDirectory)
-  displayName: "Debug: List Files"
-
 - task: Docker@2
   displayName: "Build and Push Equipment Microservice"
   inputs:
     containerRegistry: '$(fm_docker_hub_service_connection_name)'
     repository: '$(fm_docker_repository_equipment)'
     command: 'buildAndPush'
-    Dockerfile: 'FleetManagement.Equipment/Dockerfile'
-    buildContext: 'FleetManagement.Equipment'
+    Dockerfile: '$(Build.SourcesDirectory)/Dockerfile'
+    buildContext: '$(Build.SourcesDirectory)'
     tags: |
       $(Build.BuildId)
       latest
