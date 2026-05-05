@@ -1,0 +1,26 @@
+trigger:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - FleetManagement.Equipment/*
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  - group: FleetManagement_Infrastructure
+
+steps:
+- task: Docker@2
+  displayName: "Build and Push Equipment Microservice"
+  inputs:
+    containerRegistry: '$(fm_docker_hub_service_connection_name)'
+    repository: '$(fm_docker_repository_equipment)'
+    command: 'buildAndPush'
+    Dockerfile: 'FleetManagement.Equipment/Dockerfile'
+    buildContext: 'FleetManagement.Equipment'
+    tags: |
+      $(Build.BuildId)
+      latest
