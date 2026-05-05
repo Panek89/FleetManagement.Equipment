@@ -6,21 +6,65 @@ trigger:
     include:
       - FleetManagement.Equipment/*
 
+pr:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - FleetManagement.Equipment/*
+
 pool:
   vmImage: 'ubuntu-latest'
 
 variables:
   - group: FleetManagement_Infrastructure
 
-steps:
-- task: Docker@2
-  displayName: "Build and Push Equipment Microservice"
-  inputs:
-    containerRegistry: '$(fm_docker_hub_service_connection_name)'
-    repository: '$(fm_docker_repository_equipment)'
-    command: 'buildAndPush'
-    Dockerfile: '$(Build.SourcesDirectory)/Dockerfile'
-    buildContext: '$(Build.SourcesDirectory)'
-    tags: |
-      $(Build.BuildId)
-      latest
+stages:
+- stage: Build_NET
+  displayName: ".NET Build"
+  jobs:
+  - job: Build
+    displayName: "Restore and Build"
+    steps:
+    - task: DotNetCoreCLI@2
+      displayName: "Restore Solution"
+      inputs:
+        command: 'restore'
+        projects: 'FleetManagement.Equipment/FleetManagement.Equipment.sln'
+
+    - task: DotNetCoreCLI@2
+      displayName: "Build Solution"
+      inputs:
+        command: 'build'
+        projects: 'FleetManagement.Equipment/FleetManagement.Equipment.sln'
+        arguments: '--configuration Release'
+
+- stage: Build_Push_Docker
+  displayName: "Docker Build and Push"
+  dependsOn: Build_NET
+  condition: succeeded()
+  jobs:
+  - job: Docker
+    displayName: "Docker Job"
+    steps:
+    - task: Docker@2
+      displayName: "Build Equipment Image"
+      inputs:
+        command: 'build'
+        Dockerfile: '$(Build.SourcesDirectory)/FleetManagement.Equipment/Dockerfile'
+        buildContext: '$(Build.SourcesDirectory)/FleetManagement.Equipment'
+        tags: |
+          $(Build.BuildId)
+          latest
+
+    - task: Docker@2
+      displayName: "Push Equipment Image"
+      condition: and(succeeded(), eq(variables['Build.Reason'], 'IndividualCI'))
+      inputs:
+        containerRegistry: '$(fm_docker_hub_service_connection_name)'
+        repository: '$(fm_docker_repository_equipment)'
+        command: 'push'
+        tags: |
+          $(Build.BuildId)
+          latest
