@@ -19,8 +19,8 @@ steps:
     containerRegistry: '$(fm_docker_hub_service_connection_name)'
     repository: '$(fm_docker_repository_equipment)'
     command: 'buildAndPush'
-    Dockerfile: 'FleetManagement.Equipment/Dockerfile'
-    buildContext: 'FleetManagement.Equipment'
+    Dockerfile: '$(Build.SourcesDirectory)/FleetManagement.Equipment/Dockerfile'
+    buildContext: '$(Build.SourcesDirectory)/FleetManagement.Equipment'
     tags: |
       $(Build.BuildId)
       latest
