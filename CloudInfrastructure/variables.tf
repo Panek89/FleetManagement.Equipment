@@ -34,3 +34,9 @@ variable "is_local" {
   default     = false
   description = "Set to true if running from local machine to allow IP in firewall"
 }
+
+variable "docker_image" {
+  type        = string
+  description = "Full Docker image name (e.g. username/repository:tag)"
+  default     = "panekdev/fleetmanagement-equipment:latest"
+}
