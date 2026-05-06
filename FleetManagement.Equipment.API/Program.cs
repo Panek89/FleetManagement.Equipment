@@ -2,23 +2,52 @@ using FleetManagement.Equipment.Infrastructure;
 using FleetManagement.Equipment.Application;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
+using Azure.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
 if (builder.Environment.IsDevelopment())
 {
-  var appConfigConnectionString = builder.Configuration["Azure:AppConfig"];
-  var appConfigLabel = builder.Configuration["Azure:AppConfigLabel"];
+    var appConfigEndpoint = builder.Configuration["Azure:AppConfig"];
+    var appConfigLabel = builder.Configuration["Azure:AppConfigLabel"];
 
-  if (!string.IsNullOrEmpty(appConfigConnectionString))
-  {
-    builder.Configuration.AddAzureAppConfiguration(options =>
+    if (!string.IsNullOrEmpty(appConfigEndpoint))
     {
-      options.Connect(appConfigConnectionString)
-                 .Select("*")
-                 .Select("*", "dev");
-    });
-  }
+        builder.Configuration.AddAzureAppConfiguration(options =>
+        {
+            if (appConfigEndpoint.StartsWith("Endpoint="))
+            {
+                options.Connect(appConfigEndpoint)
+                       .Select("*")
+                       .Select("*", "dev");
+            }
+            else if (Uri.TryCreate(appConfigEndpoint, UriKind.Absolute, out var endpoint))
+            {
+                options.Connect(endpoint, new DefaultAzureCredential())
+                       .Select("*")
+                       .Select("*", "dev");
+            }
+        });
+    }
+}
+else
+{
+    var appConfigEndpoint = builder.Configuration["Azure:AppConfig"];
+    var appConfigLabel = builder.Configuration["Azure:AppConfigLabel"];
+
+    if (!string.IsNullOrEmpty(appConfigEndpoint))
+    {
+        builder.Configuration.AddAzureAppConfiguration(options =>
+        {
+            options.Connect(new Uri(appConfigEndpoint), new DefaultAzureCredential())
+                   .Select("*");
+
+            if (!string.IsNullOrEmpty(appConfigLabel))
+            {
+                options.Select("*", appConfigLabel);
+            }
+        });
+    }
 }
 
 var sqlConnectionString = builder.Configuration.GetConnectionString("SqlDatabase");
