@@ -4,7 +4,7 @@ trigger:
       - main
   paths:
     include:
-      - FleetManagement.Equipment/**
+      - 'FleetManagement.Equipment/**'
 
 pr:
   branches:
@@ -12,7 +12,7 @@ pr:
       - main
   paths:
     include:
-      - FleetManagement.Equipment/**
+      - 'FleetManagement.Equipment/**'
 
 pool:
   vmImage: "ubuntu-latest"
