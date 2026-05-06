@@ -2,17 +2,11 @@ trigger:
   branches:
     include:
       - main
-  paths:
-    include:
-      - 'FleetManagement.Equipment/**'
 
 pr:
   branches:
     include:
       - main
-  paths:
-    include:
-      - 'FleetManagement.Equipment/**'
 
 pool:
   vmImage: "ubuntu-latest"
