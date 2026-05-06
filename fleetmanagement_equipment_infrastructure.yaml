@@ -64,7 +64,7 @@ steps:
       TF_VAR_fm_suffix: "$(fm_suffix)"
       TF_VAR_mssql_server_name: "$(fm_mssql_server_name)-$(fm_suffix)-$(fm_default-env-suffix)"
       TF_VAR_app_configuration_name: "appconf-$(fm_suffix)-$(fm_default-env-suffix)"
-      TF_VAR_docker_image: "$(docker_repository):$(docker_image_tag)"
+      TF_VAR_docker_image: "$(fm_docker_repository_equipment):latest"
 
   - task: TerraformTaskV4@4
     displayName: "Terraform Apply"
@@ -80,4 +80,4 @@ steps:
       TF_VAR_fm_suffix: "$(fm_suffix)"
       TF_VAR_mssql_server_name: "$(fm_mssql_server_name)-$(fm_suffix)-$(fm_default-env-suffix)"
       TF_VAR_app_configuration_name: "appconf-$(fm_suffix)-$(fm_default-env-suffix)"
-      TF_VAR_docker_image: "$(docker_repository):$(docker_image_tag)"
+      TF_VAR_docker_image: "$(fm_docker_repository_equipment):latest"
