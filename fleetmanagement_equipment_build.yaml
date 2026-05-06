@@ -45,6 +45,8 @@ stages:
           - task: Docker@2
             displayName: "Build Equipment Image"
             inputs:
+              containerRegistry: "$(fm_docker_hub_service_connection_name)"
+              repository: "$(fm_docker_repository_equipment)"
               command: "build"
               Dockerfile: "$(Build.SourcesDirectory)/Dockerfile"
               buildContext: "$(Build.SourcesDirectory)"
