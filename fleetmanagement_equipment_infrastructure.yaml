@@ -28,6 +28,7 @@ steps:
         echo "  fm_suffix: $(fm_suffix)"
         echo "  fm_mssql_server_name (base): $(fm_mssql_server_name)"
         echo "  fm_default-env-suffix: $(fm_default-env-suffix)"
+        echo "  fm_docker_hub_service_connection_name $(fm_docker_hub_service_connection_name)"
         echo "----------------------------------------------------"
         echo "Derived resource names (matching Infrastructure):"
         echo "  Full SQL Server Name: $(fm_mssql_server_name)-$(fm_suffix)-$(fm_default-env-suffix)"
