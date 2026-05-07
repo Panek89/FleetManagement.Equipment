@@ -19,7 +19,11 @@ public static class InfrastructureServiceCollectionExtensions
   public static IServiceCollection AddDatabase(this IServiceCollection services, string connectionString)
   {
     services.AddDbContext<AppDbContext>(options =>
-        options.UseSqlServer(connectionString));
+        options.UseSqlServer(connectionString, sqlOptions =>
+            sqlOptions.EnableRetryOnFailure(
+                maxRetryCount: 5,
+                maxRetryDelay: TimeSpan.FromSeconds(30),
+                errorNumbersToAdd: null)));
 
     return services;
   }
