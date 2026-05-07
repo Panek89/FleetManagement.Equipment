@@ -13,6 +13,7 @@ pool:
 
 variables:
   - group: FleetManagement_Infrastructure
+  - group: Terraform_Backend
 
 stages:
   - stage: Build_NET
