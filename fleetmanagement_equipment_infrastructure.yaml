@@ -81,3 +81,45 @@ steps:
       TF_VAR_mssql_server_name: "$(fm_mssql_server_name)-$(fm_suffix)-$(fm_default-env-suffix)"
       TF_VAR_app_configuration_name: "appconf-$(fm_suffix)-$(fm_default-env-suffix)"
       TF_VAR_docker_image: "$(fm_docker_repository_equipment):latest"
+
+  - task: AzureCLI@2
+    displayName: "Wake up SQL Database"
+    inputs:
+      azureSubscription: "$(azurerm_service_connection)"
+      scriptType: "bash"
+      scriptLocation: "inlineScript"
+      inlineScript: |
+        SERVER="$(fm_mssql_server_name)-$(fm_suffix)-$(fm_default-env-suffix)"
+        DB="mssql-dbequipment-$(fm_suffix)-$(fm_default-env-suffix)"
+        RG="$(fm_resource_group_name)"
+
+        echo "Checking database status..."
+        STATUS=$(az sql db show --resource-group "$RG" --server "$SERVER" --name "$DB" --query "status" -o tsv)
+        echo "Current status: $STATUS"
+
+        if [ "$STATUS" != "Online" ]; then
+          echo "Database is not online ($STATUS). Triggering resume via TCP connection..."
+          python3 - <<'EOF'
+import socket, time, sys
+host = "$SERVER.database.windows.net"
+for attempt in range(1, 6):
+    try:
+        s = socket.create_connection((host, 1433), timeout=10)
+        s.close()
+        print(f"TCP connection succeeded on attempt {attempt} - resume triggered")
+        sys.exit(0)
+    except Exception as e:
+        print(f"Attempt {attempt}: {e}")
+        time.sleep(5)
+EOF
+          echo "Waiting for database to come online..."
+          for i in $(seq 1 20); do
+            STATUS=$(az sql db show --resource-group "$RG" --server "$SERVER" --name "$DB" --query "status" -o tsv)
+            echo "  Status: $STATUS"
+            [ "$STATUS" = "Online" ] && break
+            sleep 15
+          done
+        fi
+
+        echo "Database is $STATUS"
+        [ "$STATUS" = "Online" ] || exit 1
