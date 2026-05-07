@@ -2,8 +2,18 @@ variables:
   - group: Terraform_Backend
   - group: FleetManagement_Infrastructure
 
-trigger:
-  - main
+trigger: none
+
+pr: none
+
+resources:
+  pipelines:
+    - pipeline: build
+      source: "FleetManagement.Equipment.Build"
+      trigger:
+        branches:
+          include:
+            - main
 
 pool:
   vmImage: "ubuntu-latest"

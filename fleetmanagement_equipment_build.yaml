@@ -57,7 +57,6 @@ stages:
 
           - task: Docker@2
             displayName: "Push Equipment Image"
-            condition: and(succeeded(), or(eq(variables['Build.Reason'], 'IndividualCI'), eq(variables['Build.Reason'], 'Manual')))
             inputs:
               containerRegistry: "$(fm_docker_hub_service_connection_name)"
               repository: "$(fm_docker_repository_equipment)"
