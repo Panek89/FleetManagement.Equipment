@@ -8,76 +8,132 @@ trigger:
 pool:
   vmImage: "ubuntu-latest"
 
-steps:
-  - task: Bash@3
-    displayName: "Debug: System Information & Variables"
-    inputs:
-      targetType: "inline"
-      script: |
-        echo "Check pre-installed Terraform version:"
-        terraform --version
-        echo "----------------------------------------------------"
-        echo "Backend Variables:"
-        echo "  asa_name: $(asa_name)"
-        echo "  asa_bs_name: $(asa_bs_name)"
-        echo "  resource_group_name: $(resource_group_name)"
-        echo "  azurerm_service_connection: $(azurerm_service_connection)"
-        echo "Fleet Management Shared Variables:"
-        echo "  fm_resource_group_name: $(fm_resource_group_name)"
-        echo "  fm_location: $(fm_location)"
-        echo "  fm_suffix: $(fm_suffix)"
-        echo "  fm_mssql_server_name (base): $(fm_mssql_server_name)"
-        echo "  fm_default-env-suffix: $(fm_default-env-suffix)"
-        echo "  fm_docker_hub_service_connection_name $(fm_docker_hub_service_connection_name)"
-        echo "----------------------------------------------------"
-        echo "Derived resource names (matching Infrastructure):"
-        echo "  Full SQL Server Name: $(fm_mssql_server_name)-$(fm_suffix)-$(fm_default-env-suffix)"
-        echo "  Full App Config Name: appconf-$(fm_suffix)-$(fm_default-env-suffix)"
+stages:
+  - stage: Terraform
+    displayName: "Terraform"
+    jobs:
+      - job: TerraformJob
+        displayName: "Terraform Job"
+        steps:
+          - task: Bash@3
+            displayName: "Debug: System Information & Variables"
+            inputs:
+              targetType: "inline"
+              script: |
+                echo "Check pre-installed Terraform version:"
+                terraform --version
+                echo "----------------------------------------------------"
+                echo "Backend Variables:"
+                echo "  asa_name: $(asa_name)"
+                echo "  asa_bs_name: $(asa_bs_name)"
+                echo "  resource_group_name: $(resource_group_name)"
+                echo "  azurerm_service_connection: $(azurerm_service_connection)"
+                echo "Fleet Management Shared Variables:"
+                echo "  fm_resource_group_name: $(fm_resource_group_name)"
+                echo "  fm_location: $(fm_location)"
+                echo "  fm_suffix: $(fm_suffix)"
+                echo "  fm_mssql_server_name (base): $(fm_mssql_server_name)"
+                echo "  fm_default-env-suffix: $(fm_default-env-suffix)"
+                echo "  fm_docker_hub_service_connection_name $(fm_docker_hub_service_connection_name)"
+                echo "----------------------------------------------------"
+                echo "Derived resource names (matching Infrastructure):"
+                echo "  Full SQL Server Name: $(fm_mssql_server_name)-$(fm_suffix)-$(fm_default-env-suffix)"
+                echo "  Full App Config Name: appconf-$(fm_suffix)-$(fm_default-env-suffix)"
 
-  - task: TerraformInstaller@1
-    inputs:
-      terraformVersion: "latest"
+          - task: TerraformInstaller@1
+            inputs:
+              terraformVersion: "latest"
 
-  - task: TerraformTaskV4@4
-    displayName: "Terraform Init"
-    inputs:
-      provider: "azurerm"
-      command: "init"
-      workingDirectory: "$(System.DefaultWorkingDirectory)/CloudInfrastructure"
-      backendServiceArm: "$(azurerm_service_connection)"
-      backendAzureRmResourceGroupName: "$(resource_group_name)"
-      backendAzureRmStorageAccountName: "$(asa_name)"
-      backendAzureRmContainerName: "$(asa_bs_name)"
-      backendAzureRmKey: "fleetmanagement-equipment.tfstate"
+          - task: TerraformTaskV4@4
+            displayName: "Terraform Init"
+            inputs:
+              provider: "azurerm"
+              command: "init"
+              workingDirectory: "$(System.DefaultWorkingDirectory)/CloudInfrastructure"
+              backendServiceArm: "$(azurerm_service_connection)"
+              backendAzureRmResourceGroupName: "$(resource_group_name)"
+              backendAzureRmStorageAccountName: "$(asa_name)"
+              backendAzureRmContainerName: "$(asa_bs_name)"
+              backendAzureRmKey: "fleetmanagement-equipment.tfstate"
 
-  - task: TerraformTaskV4@4
-    displayName: "Terraform Plan"
-    inputs:
-      provider: "azurerm"
-      command: "plan"
-      workingDirectory: "$(System.DefaultWorkingDirectory)/CloudInfrastructure"
-      environmentServiceNameAzureRM: "$(azurerm_service_connection)"
-    env:
-      TF_VAR_shared_resource_group_name: "$(fm_resource_group_name)"
-      TF_VAR_location: "$(fm_location)"
-      TF_VAR_env_suffix: "$(fm_default-env-suffix)"
-      TF_VAR_fm_suffix: "$(fm_suffix)"
-      TF_VAR_mssql_server_name: "$(fm_mssql_server_name)-$(fm_suffix)-$(fm_default-env-suffix)"
-      TF_VAR_app_configuration_name: "appconf-$(fm_suffix)-$(fm_default-env-suffix)"
-      TF_VAR_docker_image: "$(fm_docker_repository_equipment):latest"
+          - task: TerraformTaskV4@4
+            displayName: "Terraform Plan"
+            inputs:
+              provider: "azurerm"
+              command: "plan"
+              workingDirectory: "$(System.DefaultWorkingDirectory)/CloudInfrastructure"
+              environmentServiceNameAzureRM: "$(azurerm_service_connection)"
+            env:
+              TF_VAR_shared_resource_group_name: "$(fm_resource_group_name)"
+              TF_VAR_location: "$(fm_location)"
+              TF_VAR_env_suffix: "$(fm_default-env-suffix)"
+              TF_VAR_fm_suffix: "$(fm_suffix)"
+              TF_VAR_mssql_server_name: "$(fm_mssql_server_name)-$(fm_suffix)-$(fm_default-env-suffix)"
+              TF_VAR_app_configuration_name: "appconf-$(fm_suffix)-$(fm_default-env-suffix)"
+              TF_VAR_docker_image: "$(fm_docker_repository_equipment):latest"
 
-  - task: TerraformTaskV4@4
-    displayName: "Terraform Apply"
-    inputs:
-      provider: "azurerm"
-      command: "apply"
-      workingDirectory: "$(System.DefaultWorkingDirectory)/CloudInfrastructure"
-      environmentServiceNameAzureRM: "$(azurerm_service_connection)"
-    env:
-      TF_VAR_shared_resource_group_name: "$(fm_resource_group_name)"
-      TF_VAR_location: "$(fm_location)"
-      TF_VAR_env_suffix: "$(fm_default-env-suffix)"
-      TF_VAR_fm_suffix: "$(fm_suffix)"
-      TF_VAR_mssql_server_name: "$(fm_mssql_server_name)-$(fm_suffix)-$(fm_default-env-suffix)"
-      TF_VAR_app_configuration_name: "appconf-$(fm_suffix)-$(fm_default-env-suffix)"
-      TF_VAR_docker_image: "$(fm_docker_repository_equipment):latest"
+          - task: TerraformTaskV4@4
+            displayName: "Terraform Apply"
+            inputs:
+              provider: "azurerm"
+              command: "apply"
+              workingDirectory: "$(System.DefaultWorkingDirectory)/CloudInfrastructure"
+              environmentServiceNameAzureRM: "$(azurerm_service_connection)"
+            env:
+              TF_VAR_shared_resource_group_name: "$(fm_resource_group_name)"
+              TF_VAR_location: "$(fm_location)"
+              TF_VAR_env_suffix: "$(fm_default-env-suffix)"
+              TF_VAR_fm_suffix: "$(fm_suffix)"
+              TF_VAR_mssql_server_name: "$(fm_mssql_server_name)-$(fm_suffix)-$(fm_default-env-suffix)"
+              TF_VAR_app_configuration_name: "appconf-$(fm_suffix)-$(fm_default-env-suffix)"
+              TF_VAR_docker_image: "$(fm_docker_repository_equipment):latest"
+
+  - stage: Wake_Up_Database
+    displayName: "Wake Up SQL Database"
+    dependsOn: Terraform
+    condition: succeeded()
+    jobs:
+      - job: WakeUpDb
+        displayName: "Ensure Database is Online"
+        steps:
+          - task: AzureCLI@2
+            displayName: "Wake up SQL Database"
+            inputs:
+              azureSubscription: "$(azurerm_service_connection)"
+              scriptType: "bash"
+              scriptLocation: "inlineScript"
+              inlineScript: |
+                SERVER="$(fm_mssql_server_name)-$(fm_suffix)-$(fm_default-env-suffix)"
+                DB="mssql-dbequipment-$(fm_suffix)-$(fm_default-env-suffix)"
+                RG="$(fm_resource_group_name)"
+
+                echo "Checking database status..."
+                STATUS=$(az sql db show --resource-group "$RG" --server "$SERVER" --name "$DB" --query "status" -o tsv)
+                echo "Current status: $STATUS"
+
+                if [ "$STATUS" != "Online" ]; then
+                  echo "Database is not online ($STATUS). Triggering resume via TCP connection..."
+                  python3 - <<'EOF'
+                import socket, time, sys
+                host = "$SERVER.database.windows.net"
+                for attempt in range(1, 6):
+                    try:
+                        s = socket.create_connection((host, 1433), timeout=10)
+                        s.close()
+                        print(f"TCP connection succeeded on attempt {attempt} - resume triggered")
+                        sys.exit(0)
+                    except Exception as e:
+                        print(f"Attempt {attempt}: {e}")
+                        time.sleep(5)
+                EOF
+                  echo "Waiting for database to come online..."
+                  for i in $(seq 1 20); do
+                    STATUS=$(az sql db show --resource-group "$RG" --server "$SERVER" --name "$DB" --query "status" -o tsv)
+                    echo "  Status: $STATUS"
+                    [ "$STATUS" = "Online" ] && break
+                    sleep 15
+                  done
+                fi
+
+                echo "Database is $STATUS"
+                [ "$STATUS" = "Online" ] || exit 1
