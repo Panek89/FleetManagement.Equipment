@@ -58,3 +58,32 @@ nunit-*.xml
 *.terraform.lock.*
 *.tfstate
 *.tfstate.*
+
+
+# Azure Functions
+FleetManagement.Equipment.Functions/bin/
+FleetManagement.Equipment.Functions/obj/
+FleetManagement.Equipment.Functions/local.settings.json
+FleetManagement.Equipment.Functions/.vscode/
+FleetManagement.Equipment.Functions/.azurefunctions/
+FleetManagement.Equipment.Functions/.funcpool/
+
+# Azurite (local Azure Storage emulator)
+__azurite_db_blob__.json
+__azurite_db_blob_extent__.json
+__azurite_db_queue__.json
+__azurite_db_queue_extent__.json
+__azurite_db_table__.json
+__azurite_db_table_extent__.json
+__blobstorage__/
+__queuestorage__/
+__tablestorage__/
+azurite_db_blob.json
+azurite_db_blob_extent.json
+azurite_db_queue.json
+azurite_db_queue_extent.json
+azurite_db_table.json
+azurite_db_table_extent.json
+
+# VS Code configuration
+.vscode/*
