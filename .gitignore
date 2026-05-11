@@ -84,6 +84,3 @@ azurite_db_queue.json
 azurite_db_queue_extent.json
 azurite_db_table.json
 azurite_db_table_extent.json
-
-# VS Code configuration
-.vscode/*
