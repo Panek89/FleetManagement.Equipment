@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "FleetManagement.Equipment.Functions": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7182",
+      "launchBrowser": false
+    }
+  }
+}
