@@ -175,10 +175,13 @@ stages:
                 echo "=== Contents of $(Pipeline.Workspace)/functions ==="
                 ls -lh $(Pipeline.Workspace)/functions
                 echo "=== Zip contents ==="
-                unzip -l $(Pipeline.Workspace)/functions/functions.zip | head -40
+                unzip -l $(Pipeline.Workspace)/functions/functions.zip
+                echo "=== host.json check ==="
+                unzip -l $(Pipeline.Workspace)/functions/functions.zip | grep host.json || echo "WARNING: host.json NOT FOUND in zip!"
 
           - task: AzureFunctionApp@2
             displayName: "Deploy to Azure Function App"
+            retryCountOnTaskFailure: 3
             inputs:
               connectedServiceNameARM: "$(azurerm_service_connection)"
               appType: "functionAppLinux"
