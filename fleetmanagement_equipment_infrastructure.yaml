@@ -186,16 +186,38 @@ stages:
               scriptType: "bash"
               scriptLocation: "inlineScript"
               inlineScript: |
+                FUNC_APP="func-equipment-$(fm_suffix)-$(fm_default-env-suffix)"
+                RG="$(fm_resource_group_name)-equipment-functions"
+                ZIP="$(Pipeline.Workspace)/functions/functions.zip"
+
+                echo "Waiting for Function App to be ready..."
+                for i in $(seq 1 10); do
+                  STATE=$(az functionapp show --name "$FUNC_APP" --resource-group "$RG" --query "state" -o tsv 2>/dev/null)
+                  echo "  Attempt $i: state=$STATE"
+                  [ "$STATE" = "Running" ] && break
+                  sleep 30
+                done
+
                 echo "Deploying Functions zip..."
-                az functionapp deploy \
-                  --resource-group "$(fm_resource_group_name)-equipment-functions" \
-                  --name "func-equipment-$(fm_suffix)-$(fm_default-env-suffix)" \
-                  --src-path "$(Pipeline.Workspace)/functions/functions.zip" \
-                  --type zip \
-                  --async false
-                echo "Deploy complete. Waiting for host to initialize..."
+                for i in $(seq 1 5); do
+                  if az functionapp deploy \
+                    --resource-group "$RG" \
+                    --name "$FUNC_APP" \
+                    --src-path "$ZIP" \
+                    --type zip \
+                    --async false 2>&1; then
+                    echo "Deployment succeeded on attempt $i"
+                    break
+                  fi
+                  echo "Attempt $i failed, waiting 30s..."
+                  sleep 30
+                done
+
+                echo "Waiting for host to initialize..."
                 sleep 60
+
                 echo "Syncing triggers..."
+                SUBSCRIPTION=$(az account show --query id -o tsv)
                 az rest \
                   --method post \
-                  --url "https://management.azure.com/subscriptions/$(az account show --query id -o tsv)/resourceGroups/$(fm_resource_group_name)-equipment-functions/providers/Microsoft.Web/sites/func-equipment-$(fm_suffix)-$(fm_default-env-suffix)/syncfunctiontriggers?api-version=2022-03-01"
+                  --url "https://management.azure.com/subscriptions/$SUBSCRIPTION/resourceGroups/$RG/providers/Microsoft.Web/sites/$FUNC_APP/syncfunctiontriggers?api-version=2022-03-01"
