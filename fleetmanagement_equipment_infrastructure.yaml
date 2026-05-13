@@ -188,7 +188,7 @@ stages:
               appName: "func-equipment-$(fm_suffix)-$(fm_default-env-suffix)"
               resourceGroupName: "$(fm_resource_group_name)-equipment-functions"
               package: "$(Pipeline.Workspace)/functions/functions.zip"
-              runtimeStack: "DOTNET-ISOLATED|10.0"
+              runtimeStack: "DOTNET-ISOLATED|9.0"
               deploymentMethod: "zipDeploy"
 
           - task: AzureCLI@2
