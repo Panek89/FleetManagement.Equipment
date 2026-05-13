@@ -202,8 +202,17 @@ stages:
                 RG="$(fm_resource_group_name)-equipment-functions"
                 SUBSCRIPTION=$(az account show --query id -o tsv)
 
-                echo "Waiting for host to initialize (90s)..."
-                sleep 90
+                echo "Restarting Function App to pick up new package..."
+                az functionapp restart --name "$FUNC_APP" --resource-group "$RG"
+
+                echo "Checking WEBSITE_RUN_FROM_PACKAGE value..."
+                az functionapp config appsettings list \
+                  --name "$FUNC_APP" \
+                  --resource-group "$RG" \
+                  --query "[?name=='WEBSITE_RUN_FROM_PACKAGE'].value" -o tsv
+
+                echo "Waiting for host to initialize (120s)..."
+                sleep 120
 
                 echo "Syncing triggers..."
                 for i in $(seq 1 5); do
