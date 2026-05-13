@@ -16,6 +16,7 @@ resource "azurerm_linux_function_app" "func_equipment" {
 
   app_settings = {
     "FUNCTIONS_WORKER_RUNTIME"     = "dotnet-isolated"
+    "FUNCTIONS_EXTENSION_VERSION"  = "~4"
     "EQUIPMENT_DB_HEALTHCHECK_URL" = "https://${azurerm_linux_web_app.app_equipment.default_hostname}/api/healthcheck/db"
   }
 
