@@ -48,14 +48,22 @@ stages:
             inputs:
               command: "publish"
               projects: "FleetManagement.Equipment.Functions/FleetManagement.Equipment.Functions.csproj"
-              arguments: "--configuration Release --output $(Build.ArtifactStagingDirectory)/functions"
+              arguments: "--configuration Release --output $(Build.ArtifactStagingDirectory)/functions-publish"
               publishWebProjects: false
-              zipAfterPublish: true
+              zipAfterPublish: false
+
+          - task: ArchiveFiles@2
+            displayName: "Zip Functions Output"
+            inputs:
+              rootFolderOrFile: "$(Build.ArtifactStagingDirectory)/functions-publish"
+              includeRootFolder: false
+              archiveType: "zip"
+              archiveFile: "$(Build.ArtifactStagingDirectory)/functions.zip"
 
           - task: PublishPipelineArtifact@1
             displayName: "Upload Functions Artifact"
             inputs:
-              targetPath: "$(Build.ArtifactStagingDirectory)/functions"
+              targetPath: "$(Build.ArtifactStagingDirectory)/functions.zip"
               artifact: "functions"
 
   - stage: Build_Push_Docker

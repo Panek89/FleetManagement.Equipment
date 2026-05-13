@@ -167,6 +167,16 @@ stages:
               artifactName: "functions"
               targetPath: "$(Pipeline.Workspace)/functions"
 
+          - task: Bash@3
+            displayName: "Debug: List Functions Artifact"
+            inputs:
+              targetType: "inline"
+              script: |
+                echo "=== Contents of $(Pipeline.Workspace)/functions ==="
+                ls -lh $(Pipeline.Workspace)/functions
+                echo "=== Zip contents ==="
+                unzip -l $(Pipeline.Workspace)/functions/functions.zip | head -40
+
           - task: AzureFunctionApp@2
             displayName: "Deploy to Azure Function App"
             inputs:
@@ -174,6 +184,6 @@ stages:
               appType: "functionAppLinux"
               appName: "func-equipment-$(fm_suffix)-$(fm_default-env-suffix)"
               resourceGroupName: "$(fm_resource_group_name)-equipment-functions"
-              package: "$(Pipeline.Workspace)/functions/*.zip"
+              package: "$(Pipeline.Workspace)/functions/functions.zip"
               runtimeStack: "DOTNET-ISOLATED|10.0"
               deploymentMethod: "zipDeploy"
