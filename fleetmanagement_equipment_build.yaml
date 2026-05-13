@@ -51,6 +51,7 @@ stages:
               arguments: "--configuration Release --output $(Build.ArtifactStagingDirectory)/functions-publish"
               publishWebProjects: false
               zipAfterPublish: false
+              modifyOutputPath: false
 
           - task: ArchiveFiles@2
             displayName: "Zip Functions Output"
