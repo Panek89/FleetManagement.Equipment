@@ -179,14 +179,23 @@ stages:
                 echo "=== host.json check ==="
                 unzip -l $(Pipeline.Workspace)/functions/functions.zip | grep host.json || echo "WARNING: host.json NOT FOUND in zip!"
 
-          - task: AzureFunctionApp@2
+          - task: AzureCLI@2
             displayName: "Deploy to Azure Function App"
-            retryCountOnTaskFailure: 3
             inputs:
-              connectedServiceNameARM: "$(azurerm_service_connection)"
-              appType: "functionAppLinux"
-              appName: "func-equipment-$(fm_suffix)-$(fm_default-env-suffix)"
-              resourceGroupName: "$(fm_resource_group_name)-equipment-functions"
-              package: "$(Pipeline.Workspace)/functions/functions.zip"
-              runtimeStack: "DOTNET-ISOLATED|10.0"
-              deploymentMethod: "zipDeploy"
+              azureSubscription: "$(azurerm_service_connection)"
+              scriptType: "bash"
+              scriptLocation: "inlineScript"
+              inlineScript: |
+                echo "Deploying Functions zip..."
+                az functionapp deploy \
+                  --resource-group "$(fm_resource_group_name)-equipment-functions" \
+                  --name "func-equipment-$(fm_suffix)-$(fm_default-env-suffix)" \
+                  --src-path "$(Pipeline.Workspace)/functions/functions.zip" \
+                  --type zip \
+                  --async false
+                echo "Deploy complete. Waiting for host to initialize..."
+                sleep 60
+                echo "Syncing triggers..."
+                az rest \
+                  --method post \
+                  --url "https://management.azure.com/subscriptions/$(az account show --query id -o tsv)/resourceGroups/$(fm_resource_group_name)-equipment-functions/providers/Microsoft.Web/sites/func-equipment-$(fm_suffix)-$(fm_default-env-suffix)/syncfunctiontriggers?api-version=2022-03-01"
