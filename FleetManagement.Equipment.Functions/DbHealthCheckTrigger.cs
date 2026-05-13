@@ -19,7 +19,7 @@ public class DbHealthCheckTrigger
   }
 
   [Function("DbHealthCheckTrigger")]
-  public async Task Run([TimerTrigger("0 */10 * * * *")] TimerInfo myTimer)
+  public async Task Run([TimerTrigger("0 */15 * * * *")] TimerInfo myTimer)
   {
     var currentTime = DateTime.Now;
     _logger.LogInformation("HTTP Health Check started for: {url} at {time}", _targetUrl, currentTime.ToString("yyyy-MM-dd HH:mm:ss"));
