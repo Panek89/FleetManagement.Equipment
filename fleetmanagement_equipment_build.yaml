@@ -35,6 +35,29 @@ stages:
               projects: "FleetManagement.Equipment.sln"
               arguments: "--configuration Release"
 
+  - stage: Publish_Functions
+    displayName: "Publish Functions Artifact"
+    dependsOn: Build_NET
+    condition: succeeded()
+    jobs:
+      - job: PublishFunctions
+        displayName: "Publish Functions"
+        steps:
+          - task: DotNetCoreCLI@2
+            displayName: "Publish Functions Project"
+            inputs:
+              command: "publish"
+              projects: "FleetManagement.Equipment.Functions/FleetManagement.Equipment.Functions.csproj"
+              arguments: "--configuration Release --output $(Build.ArtifactStagingDirectory)/functions"
+              publishWebProjects: false
+              zipAfterPublish: true
+
+          - task: PublishPipelineArtifact@1
+            displayName: "Upload Functions Artifact"
+            inputs:
+              targetPath: "$(Build.ArtifactStagingDirectory)/functions"
+              artifact: "functions"
+
   - stage: Build_Push_Docker
     displayName: "Docker Build and Push"
     dependsOn: Build_NET

@@ -147,3 +147,33 @@ stages:
 
                 echo "Database is $STATUS"
                 [ "$STATUS" = "Online" ] || exit 1
+
+  - stage: Deploy_Functions
+    displayName: "Deploy Azure Functions"
+    dependsOn: Wake_Up_Database
+    condition: succeeded()
+    jobs:
+      - job: DeployFunctions
+        displayName: "Deploy Functions Job"
+        steps:
+          - task: DownloadPipelineArtifact@2
+            displayName: "Download Functions Artifact"
+            inputs:
+              buildType: "specific"
+              project: "$(System.TeamProjectId)"
+              definition: "$(resources.pipeline.build.pipelineID)"
+              buildVersionToDownload: "specific"
+              pipelineId: "$(resources.pipeline.build.runID)"
+              artifactName: "functions"
+              targetPath: "$(Pipeline.Workspace)/functions"
+
+          - task: AzureFunctionApp@2
+            displayName: "Deploy to Azure Function App"
+            inputs:
+              connectedServiceNameARM: "$(azurerm_service_connection)"
+              appType: "functionAppLinux"
+              appName: "func-equipment-$(fm_suffix)-$(fm_default-env-suffix)"
+              resourceGroupName: "$(fm_resource_group_name)-equipment-functions"
+              package: "$(Pipeline.Workspace)/functions/*.zip"
+              runtimeStack: "DOTNET-ISOLATED|10.0"
+              deploymentMethod: "zipDeploy"
