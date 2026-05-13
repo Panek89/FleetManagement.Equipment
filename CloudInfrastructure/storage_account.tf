@@ -1,5 +1,5 @@
 resource "azurerm_storage_account" "st_equipment_functions" {
-  name                     = lower(replace("stequipfn${var.fm_suffix}${var.env_suffix}", "/[-_]/", ""))
+  name                     = lower(replace("staccfnequipmentfm${var.env_suffix}", "/[-_]/", ""))
   resource_group_name      = data.azurerm_resource_group.shared_rg.name
   location                 = data.azurerm_resource_group.shared_rg.location
   account_tier             = "Standard"
