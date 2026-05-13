@@ -6,6 +6,14 @@ resource "azurerm_service_plan" "asp_equipment" {
   sku_name            = "F1"
 }
 
+resource "azurerm_service_plan" "asp_equipment_functions" {
+  name                = "asp-equipment-func-${var.fm_suffix}-${var.env_suffix}"
+  resource_group_name = data.azurerm_resource_group.shared_rg.name
+  location            = data.azurerm_resource_group.shared_rg.location
+  os_type             = "Linux"
+  sku_name            = "Y1"
+}
+
 resource "azurerm_linux_web_app" "app_equipment" {
   name                = "app-equipment-${var.fm_suffix}-${var.env_suffix}"
   resource_group_name = data.azurerm_resource_group.shared_rg.name
