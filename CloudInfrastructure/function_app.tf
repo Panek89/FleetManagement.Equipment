@@ -1,7 +1,7 @@
 resource "azurerm_linux_function_app" "func_equipment" {
   name                = "func-equipment-${var.fm_suffix}-${var.env_suffix}"
-  resource_group_name = data.azurerm_resource_group.shared_rg.name
-  location            = data.azurerm_resource_group.shared_rg.location
+  resource_group_name = azurerm_resource_group.equipment_functions_rg.name
+  location            = azurerm_resource_group.equipment_functions_rg.location
 
   storage_account_name       = azurerm_storage_account.st_equipment_functions.name
   storage_account_access_key = azurerm_storage_account.st_equipment_functions.primary_access_key

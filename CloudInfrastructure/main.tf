@@ -24,6 +24,11 @@ data "azurerm_resource_group" "shared_rg" {
   name = var.shared_resource_group_name
 }
 
+resource "azurerm_resource_group" "equipment_functions_rg" {
+  name     = "${var.shared_resource_group_name}-equipment-functions"
+  location = data.azurerm_resource_group.shared_rg.location
+}
+
 data "azurerm_mssql_server" "shared_mssql_server" {
   name                = var.mssql_server_name
   resource_group_name = data.azurerm_resource_group.shared_rg.name

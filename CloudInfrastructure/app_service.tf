@@ -8,8 +8,8 @@ resource "azurerm_service_plan" "asp_equipment" {
 
 resource "azurerm_service_plan" "asp_equipment_functions" {
   name                = "asp-equipment-func-${var.fm_suffix}-${var.env_suffix}"
-  resource_group_name = data.azurerm_resource_group.shared_rg.name
-  location            = data.azurerm_resource_group.shared_rg.location
+  resource_group_name = azurerm_resource_group.equipment_functions_rg.name
+  location            = azurerm_resource_group.equipment_functions_rg.location
   os_type             = "Linux"
   sku_name            = "Y1"
 }
