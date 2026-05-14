@@ -3,9 +3,9 @@ resource "azurerm_linux_function_app" "func_equipment" {
   resource_group_name = azurerm_resource_group.equipment_functions_rg.name
   location            = azurerm_resource_group.equipment_functions_rg.location
 
-  storage_account_name       = azurerm_storage_account.st_equipment_functions.name
-  storage_account_access_key = azurerm_storage_account.st_equipment_functions.primary_access_key
-  service_plan_id            = azurerm_service_plan.asp_equipment_functions.id
+  storage_account_name          = azurerm_storage_account.st_equipment_functions.name
+  storage_uses_managed_identity = true
+  service_plan_id               = azurerm_service_plan.asp_equipment_functions.id
 
   site_config {
     application_stack {
@@ -23,4 +23,32 @@ resource "azurerm_linux_function_app" "func_equipment" {
   identity {
     type = "SystemAssigned"
   }
+}
+
+resource "azurerm_role_assignment" "func_equipment_storage_blob_data_owner" {
+  scope                = azurerm_storage_account.st_equipment_functions.id
+  role_definition_name = "Storage Blob Data Owner"
+  principal_id         = azurerm_linux_function_app.func_equipment.identity[0].principal_id
+}
+
+resource "azurerm_role_assignment" "func_equipment_storage_queue_data_contributor" {
+  scope                = azurerm_storage_account.st_equipment_functions.id
+  role_definition_name = "Storage Queue Data Contributor"
+  principal_id         = azurerm_linux_function_app.func_equipment.identity[0].principal_id
+}
+
+resource "azurerm_role_assignment" "func_equipment_storage_account_contributor" {
+  scope                = azurerm_storage_account.st_equipment_functions.id
+  role_definition_name = "Storage Account Contributor"
+  principal_id         = azurerm_linux_function_app.func_equipment.identity[0].principal_id
+}
+
+resource "time_sleep" "wait_for_func_storage_rbac_propagation" {
+  depends_on = [
+    azurerm_role_assignment.func_equipment_storage_blob_data_owner,
+    azurerm_role_assignment.func_equipment_storage_queue_data_contributor,
+    azurerm_role_assignment.func_equipment_storage_account_contributor
+  ]
+
+  create_duration = "120s"
 }
