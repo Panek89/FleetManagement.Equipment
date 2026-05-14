@@ -179,17 +179,20 @@ stages:
                 echo "=== host.json check ==="
                 unzip -l $(Pipeline.Workspace)/functions/functions.zip | grep host.json || echo "WARNING: host.json NOT FOUND in zip!"
 
-          - task: AzureFunctionApp@2
-            displayName: "Deploy to Azure Function App"
-            continueOnError: true
+          - task: AzureCLI@2
+            displayName: "Deploy package via Zip Deploy"
             inputs:
-              connectedServiceNameARM: "$(azurerm_service_connection)"
-              appType: "functionAppLinux"
-              appName: "func-equipment-$(fm_suffix)-$(fm_default-env-suffix)"
-              resourceGroupName: "$(fm_resource_group_name)-equipment-functions"
-              package: "$(Pipeline.Workspace)/functions/functions.zip"
-              runtimeStack: "DOTNET-ISOLATED|9.0"
-              deploymentMethod: "zipDeploy"
+              azureSubscription: "$(azurerm_service_connection)"
+              scriptType: "bash"
+              scriptLocation: "inlineScript"
+              inlineScript: |
+                set -euo pipefail
+                az functionapp deployment source config-zip \
+                  --resource-group "$(fm_resource_group_name)-equipment-functions" \
+                  --name "func-equipment-$(fm_suffix)-$(fm_default-env-suffix)" \
+                  --src "$(Pipeline.Workspace)/functions/functions.zip" \
+                  --build-remote false \
+                  --timeout 600
 
           - task: AzureCLI@2
             displayName: "Wait and verify Function App"
